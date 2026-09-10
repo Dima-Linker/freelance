@@ -1,0 +1,64 @@
+// use prisma-next
+
+model User {
+  id        Uuid     @id @default(uuid())
+  email     String   @unique
+  username  String?
+  name      String?
+  password  String
+
+  posts     Post[]
+  jobs      Job[]
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Uuid
+
+  createdAt TimestamptzString @default(now())
+     updatedAt temporal.updatedAtString()
+}
+
+model Job {
+  id          Uuid @id @default(uuid())
+  title       String
+  description String
+  remote      Boolean
+  workYears   Int
+  budgetMin   Int
+  budgetMax   Int
+
+  clientId    Uuid
+  client      User @relation(fields: [clientId], references: [id])
+
+  technologies JobTechnology[]
+
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model Technology {
+  id          Uuid @id @default(uuid())
+  title       String @unique
+  description String?
+
+  jobs        JobTechnology[]
+
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model JobTechnology {
+  jobId        Uuid
+  technologyId Uuid
+
+  job          Job        @relation(fields: [jobId], references: [id])
+  technology   Technology @relation(fields: [technologyId], references: [id])
+}

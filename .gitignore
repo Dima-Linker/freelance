@@ -27,12 +27,18 @@ node_modules
 # misc
 /.sass-cache
 /connect.lock
-/coverage
+coverage/
 /libpeerconnection.log
 npm-debug.log
 yarn-error.log
 testem.log
+*.log
 /typings
+
+# environment
+.env
+.env.*
+!.env.example
 
 # System Files
 .DS_Store
@@ -41,5 +47,14 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
-.claude/worktrees
-.claude/settings.local.json
+
+# AI-Agent-Ordner (Qoder, Claude, Cursor, Devin) – lokal, nie versionieren
+.agents/
+.claude/
+.cursor/
+.devin/
+
+.angular
+
+# persönliche Übungsaufgaben (nicht versionieren)
+aufgaben/

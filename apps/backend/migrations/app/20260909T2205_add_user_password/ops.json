@@ -1,0 +1,523 @@
+[
+  {
+    "id": "table.job",
+    "label": "Create table \"job\"",
+    "summary": "Creates table \"job\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "job"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"job\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"job\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"job\"",
+        "sql": "CREATE TABLE \"public\".\"job\" (\n  \"budgetMax\" int4 NOT NULL,\n  \"budgetMin\" int4 NOT NULL,\n  \"clientId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"remote\" bool NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"workYears\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"job\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"job\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.jobTechnology",
+    "label": "Create table \"jobTechnology\"",
+    "summary": "Creates table \"jobTechnology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "jobTechnology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"jobTechnology\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"jobTechnology\"",
+        "sql": "CREATE TABLE \"public\".\"jobTechnology\" (\n  \"jobId\" uuid NOT NULL,\n  \"technologyId\" uuid NOT NULL\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"jobTechnology\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.technology",
+    "label": "Create table \"technology\"",
+    "summary": "Creates table \"technology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "technology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"technology\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"technology\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"technology\"",
+        "sql": "CREATE TABLE \"public\".\"technology\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"technology\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"technology\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.user.password",
+    "label": "Add column \"password\" to \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "password",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"password\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "password"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"password\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD COLUMN \"password\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"password\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "password"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data_migration.backfill-user-password",
+    "label": "Data transform: backfill-user-password",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check backfill-user-password has work to do",
+        "sql": "SELECT EXISTS (SELECT 1 FROM \"public\".\"user\" WHERE \"password\" IS NULL) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run backfill-user-password",
+        "sql": "UPDATE \"public\".\"user\" SET \"password\" = '7743959886b6213adf5b903d84534f08deb079a22bbb06dd6148abaed2d782ec' WHERE \"password\" IS NULL",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify backfill-user-password resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT 1 FROM \"public\".\"user\" WHERE \"password\" IS NULL) AS ok",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.setNotNull.user.password",
+    "label": "Set NOT NULL on \"user\".\"password\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "password",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"password\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "password"
+        ]
+      },
+      {
+        "description": "ensure no NULL values in \"password\"",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"user\" WHERE \"password\" IS NULL) AS \"result\"",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "set NOT NULL on \"password\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ALTER COLUMN \"password\" SET NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"password\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "user",
+          "password",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.technology.technology_title_key",
+    "label": "Add unique constraint on \"technology\" (title)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "technology_title_key",
+        "table": "technology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"technology_title_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "technology_title_key",
+          "public",
+          "\"public\".\"technology\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"technology_title_key\"",
+        "sql": "ALTER TABLE \"public\".\"technology\" ADD CONSTRAINT \"technology_title_key\" UNIQUE (\"title\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"technology_title_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "technology_title_key",
+          "public",
+          "\"public\".\"technology\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.job.job_clientId_idx_153a9a49",
+    "label": "Create index \"job_clientId_idx_153a9a49\" on \"job\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "job_clientId_idx_153a9a49",
+        "table": "job"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"job_clientId_idx_153a9a49\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"job_clientId_idx_153a9a49\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"job_clientId_idx_153a9a49\"",
+        "sql": "CREATE INDEX \"job_clientId_idx_153a9a49\" ON \"public\".\"job\" (\"clientId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"job_clientId_idx_153a9a49\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"job_clientId_idx_153a9a49\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.jobTechnology.jobTechnology_jobId_idx_623c8f77",
+    "label": "Create index \"jobTechnology_jobId_idx_623c8f77\" on \"jobTechnology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "jobTechnology_jobId_idx_623c8f77",
+        "table": "jobTechnology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"jobTechnology_jobId_idx_623c8f77\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology_jobId_idx_623c8f77\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"jobTechnology_jobId_idx_623c8f77\"",
+        "sql": "CREATE INDEX \"jobTechnology_jobId_idx_623c8f77\" ON \"public\".\"jobTechnology\" (\"jobId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"jobTechnology_jobId_idx_623c8f77\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology_jobId_idx_623c8f77\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.jobTechnology.jobTechnology_technologyId_idx_1e2af707",
+    "label": "Create index \"jobTechnology_technologyId_idx_1e2af707\" on \"jobTechnology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "jobTechnology_technologyId_idx_1e2af707",
+        "table": "jobTechnology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"jobTechnology_technologyId_idx_1e2af707\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology_technologyId_idx_1e2af707\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"jobTechnology_technologyId_idx_1e2af707\"",
+        "sql": "CREATE INDEX \"jobTechnology_technologyId_idx_1e2af707\" ON \"public\".\"jobTechnology\" (\"technologyId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"jobTechnology_technologyId_idx_1e2af707\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"jobTechnology_technologyId_idx_1e2af707\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.job.job_clientId_fkey",
+    "label": "Add foreign key \"job_clientId_fkey\" on \"job\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "job_clientId_fkey",
+        "table": "job"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"job_clientId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "job_clientId_fkey",
+          "public",
+          "\"public\".\"job\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"job_clientId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"job\"\nADD CONSTRAINT \"job_clientId_fkey\"\nFOREIGN KEY (\"clientId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"job_clientId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "job_clientId_fkey",
+          "public",
+          "\"public\".\"job\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.jobTechnology.jobTechnology_jobId_fkey",
+    "label": "Add foreign key \"jobTechnology_jobId_fkey\" on \"jobTechnology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "jobTechnology_jobId_fkey",
+        "table": "jobTechnology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"jobTechnology_jobId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "jobTechnology_jobId_fkey",
+          "public",
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"jobTechnology_jobId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"jobTechnology\"\nADD CONSTRAINT \"jobTechnology_jobId_fkey\"\nFOREIGN KEY (\"jobId\")\nREFERENCES \"public\".\"job\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"jobTechnology_jobId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "jobTechnology_jobId_fkey",
+          "public",
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.jobTechnology.jobTechnology_technologyId_fkey",
+    "label": "Add foreign key \"jobTechnology_technologyId_fkey\" on \"jobTechnology\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "jobTechnology_technologyId_fkey",
+        "table": "jobTechnology"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"jobTechnology_technologyId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "jobTechnology_technologyId_fkey",
+          "public",
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"jobTechnology_technologyId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"jobTechnology\"\nADD CONSTRAINT \"jobTechnology_technologyId_fkey\"\nFOREIGN KEY (\"technologyId\")\nREFERENCES \"public\".\"technology\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"jobTechnology_technologyId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "jobTechnology_technologyId_fkey",
+          "public",
+          "\"public\".\"jobTechnology\""
+        ]
+      }
+    ]
+  }
+]

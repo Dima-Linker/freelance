@@ -1,0 +1,6 @@
+# Build-Artefakte und generierte Ordner
+dist
+coverage
+node_modules
+.nx
+.angular
