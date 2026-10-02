@@ -1,0 +1,92 @@
+<aside class="sidebar">
+  <div class="sidebar__top">
+    <div class="sidebar__brand">
+      <img
+        src="/img/Container.png"
+        width="98"
+        height="28"
+        alt="Veyro"
+      />
+
+      <span class="sidebar__badge">PRO</span>
+    </div>
+
+    <div class="sidebar__section">
+      <span class="sidebar__section-title">
+        Workspace
+      </span>
+
+      <nav class="sidebar__nav">
+        @for (item of navItems; track item.route) {
+          <a
+            class="sidebar__link"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="sidebar__link-label">
+              {{ item.label }}
+            </span>
+
+            @if (item.badge) {
+              <span class="sidebar__link-badge">
+                {{ item.badge }}
+              </span>
+            }
+          </a>
+        }
+      </nav>
+    </div>
+
+    <!-- Account -->
+    <div class="sidebar__section sidebar__section--account">
+      <span class="sidebar__section-title">
+        Account
+      </span>
+
+      <nav class="sidebar__nav">
+        <a
+          class="sidebar__link"
+          routerLink="/preferences"
+          routerLinkActive="active"
+        >
+          <span>Preferences</span>
+        </a>
+
+        <a
+          class="sidebar__link"
+          routerLink="/settings"
+          routerLinkActive="active"
+        >
+          <span>Settings</span>
+        </a>
+      </nav>
+    </div>
+
+  </div>
+
+  <!-- User -->
+  <div class="sidebar__user">
+    <div class="sidebar__avatar">
+      D
+    </div>
+
+    <div class="sidebar__user-info">
+      <span class="sidebar__user-name">
+        Dima
+      </span>
+
+      <span class="sidebar__user-role">
+        Senior Freelancer
+      </span>
+    </div>
+
+    <button
+      type="button"
+      class="sidebar__user-menu"
+      aria-label="Open user menu"
+    >
+      ⋮
+    </button>
+  </div>
+</aside>

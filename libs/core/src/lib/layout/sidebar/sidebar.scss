@@ -1,0 +1,235 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 216px;
+  height: 100vh;
+  padding: 12px;
+
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border-subtle);
+
+  color: var(--color-text-primary);
+
+  // -----------------------------
+  // Top
+  // -----------------------------
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // -----------------------------
+  // Brand
+  // -----------------------------
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 40px;
+    padding: 0 8px;
+  }
+
+  &__badge {
+    padding: 2px 6px;
+
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 4px;
+
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  // -----------------------------
+  // Sections
+  // -----------------------------
+
+  &__section {
+    margin-top: 20px;
+
+    &--account {
+      padding-top: 16px;
+
+      border-top: 1px solid var(--color-border-subtle);
+    }
+  }
+
+  &__section-title {
+    display: block;
+
+    margin: 0 8px 8px;
+
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  // -----------------------------
+  // Navigation
+  // -----------------------------
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 32px;
+    padding: 0 10px;
+
+    border: 1px solid transparent;
+    border-radius: 6px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
+    text-decoration: none;
+
+    transition:
+      color 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease;
+
+    &:hover {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    &.active {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.07);
+      border-color: var(--color-border-subtle);
+    }
+  }
+
+  &__link-label {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__link-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    border-radius: 999px;
+
+    background: var(--color-primary);
+    color: #ffffff;
+
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  // -----------------------------
+  // User
+  // -----------------------------
+
+  &__user {
+    display: flex;
+    align-items: center;
+
+    min-height: 52px;
+    padding: 6px 8px;
+
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+
+    background: var(--color-surface-muted);
+  }
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+
+    border-radius: 50%;
+
+    background: var(--color-primary);
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &__user-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    min-width: 0;
+  }
+
+  &__user-name {
+    overflow: hidden;
+
+    color: var(--color-text-primary);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__user-role {
+    overflow: hidden;
+
+    margin-top: 2px;
+
+    color: var(--color-text-muted);
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__user-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+    padding: 0;
+
+    border: 0;
+    border-radius: 4px;
+
+    background: transparent;
+    color: var(--color-text-muted);
+
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-primary);
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<section class="dashboard-page">
+  <div class="dashboard-page__container">
+    <lib-dashboard-overview [overview]="dashboardOverview" />
+  </div>
+
+  <div class="dashboard-page__stats">
+    @for (entry of dashboardStats; track entry.label) {
+      <lib-stat-card [stat]="entry" />
+    }
+  </div>
+</section>

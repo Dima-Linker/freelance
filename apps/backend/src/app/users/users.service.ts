@@ -1,11 +1,13 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "../db/prisma/prisma.service";
-import {UpdateUserDto} from "./dto/update-user.dto";
-
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { PrismaService } from '../db/prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-
   constructor(private readonly prisma: PrismaService) {}
 
   async getUsers() {
@@ -13,23 +15,29 @@ export class UsersService {
   }
 
   async getUser(id: string) {
-    const user = await this.prisma.User
-      .where({ id })
-      .first();
-
+    const user = await this.prisma.User.where({ id }).first();
     if (!user) {
       throw new NotFoundException('User does not exist');
     }
     return user;
   }
 
+  async getMe(id: string) {
+    const user = await this.prisma.User.where({ id }).first();
+
+    if (!user) {
+      throw new UnauthorizedException('User does not exist');
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.User
-      .where({ id })
-      .update({
-        name: updateUserDto.name,
-        email: updateUserDto.email,
-      });
+    const user = await this.prisma.User.where({ id }).update({
+      name: updateUserDto.name,
+      email: updateUserDto.email,
+    });
 
     if (!user) {
       throw new NotFoundException('User does not exist');
@@ -38,13 +46,10 @@ export class UsersService {
   }
 
   async deleteUser(id: string) {
-    const deleteUser = await this.prisma.User
-    .where({ id })
-    .delete();
+    const deleteUser = await this.prisma.User.where({ id }).delete();
     if (!deleteUser) {
       throw new NotFoundException('User does not exist');
     }
     return deleteUser;
   }
 }
-

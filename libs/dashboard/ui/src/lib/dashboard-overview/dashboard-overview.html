@@ -1,0 +1,25 @@
+<section class="dashboard-overview">
+  <div class="dashboard-overview__header">
+    <span class="dashboard-overview__workspace">
+      {{ overview().workspace }}
+    </span>
+    <span></span>
+    <span class="dashboard-overview__sprint">
+      {{ overview().sprint }}
+    </span>
+  </div>
+
+  <div class="dashboard-overview__content">
+    <h1>
+      Good morning, {{ overview().userName }}
+    </h1>
+
+    <p>
+      {{ overview().subtitle }}
+    </p>
+
+    <span class="dashboard-overview__status">
+      {{ overview().status }}
+    </span>
+  </div>
+</section>

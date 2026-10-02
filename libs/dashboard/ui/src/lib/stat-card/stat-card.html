@@ -1,0 +1,27 @@
+<div class="stat-card">
+  <div class="stat-card__title">
+    {{ stat().label }}
+  </div>
+
+  <div class="stat-card__value">
+    {{ stat().value }}
+  </div>
+
+  @if (stat().badge) {
+    <span class="stat-card__badge">
+      {{ stat().badge }}
+    </span>
+  }
+
+  <div class="stat-card__footer">
+    <span>
+      {{ stat().footer?.left }}
+    </span>
+
+    @if (stat().footer?.right) {
+      <span>
+        {{ stat().footer?.right }}
+      </span>
+    }
+  </div>
+</div>

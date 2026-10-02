@@ -15,10 +15,26 @@
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "@internal/sql-contract/types": ["./node_modules/@prisma/orm-family-sql/dist/contract__types.d.mts"],
-      "@internal/contract/types": ["./node_modules/@prisma/orm-framework/dist/contract__types.d.mts"],
-      "@internal/target-postgres/codec-types": ["./node_modules/@prisma/orm-target-postgres/dist/target__codec-types.d.mts"],
-      "@internal/adapter-postgres/operation-types": ["./node_modules/@prisma/orm-postgres/dist/adapter__operation-types.d.mts"]
+      "@internal/sql-contract/types": [
+        "./node_modules/@prisma/orm-family-sql/dist/contract__types.d.mts"
+      ],
+      "@internal/contract/types": [
+        "./node_modules/@prisma/orm-framework/dist/contract__types.d.mts"
+      ],
+      "@internal/target-postgres/codec-types": [
+        "./node_modules/@prisma/orm-target-postgres/dist/target__codec-types.d.mts"
+      ],
+      "@internal/adapter-postgres/operation-types": [
+        "./node_modules/@prisma/orm-postgres/dist/adapter__operation-types.d.mts"
+      ],
+      "@veyro/core": ["./libs/core/src/index.ts"],
+      "@veyro/shared/ui": ["./libs/shared/ui/src/index.ts"],
+      "@veyro/shared/util": ["./libs/shared/util/src/index.ts"],
+      "@veyro/dashboard/feature": ["./libs/dashboard/feature/src/index.ts"],
+      "@veyro/dashboard/ui": ["./libs/dashboard/ui/src/index.ts"],
+      "@veyro/dashboard/data-access": [
+        "./libs/dashboard/data-access/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

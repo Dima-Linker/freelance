@@ -6,6 +6,7 @@
     "contract:emit": "prisma contract emit"
   },
   "dependencies": {
+    "@nestjs/jwt": "^11.0.2",
     "bcrypt": "^6.0.0"
   },
   "devDependencies": {

@@ -1,0 +1,38 @@
+.stat-card {
+  width: 314px;
+  min-height: 141px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #1b1b1b;
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &__value {
+    margin-top: 10px;
+
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  &__badge {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: auto;
+    font-size: 14px;
+  }
+}
